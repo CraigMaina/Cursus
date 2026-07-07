@@ -12,6 +12,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase/client';
 import type { CursusDataAccess } from '@/lib/domain/dal';
 import {
+  isoDate,
   newChallengeInput,
   newRelapseInput,
   newRuleInput,
@@ -329,12 +330,20 @@ export class SupabaseDataAccess implements CursusDataAccess {
 
   async evaluateResets(
     challengeId: string,
-    _throughDate: string,
+    throughDate: string,
   ): Promise<ChallengeReset[]> {
-    // Phase 1: reset computation is server-side and lands in Phase 2. Until then this
-    // returns the existing (server-written) resets; the client never fabricates one.
-    void _throughDate;
-    return this.listResets(challengeId);
+    // Server-authoritative: the SECURITY DEFINER function evaluate_challenge_resets is the
+    // ONLY writer of challenge_resets. This RPC asks it to (re)evaluate strict resets up to
+    // throughDate (which the function clamps to the last CLOSED day) and returns the rows.
+    // The client cannot fabricate or suppress a reset here — it only triggers/reads.
+    const through = isoDate.parse(throughDate);
+    const rows = unwrap(
+      await this.sb.rpc('evaluate_challenge_resets', {
+        p_challenge_id: challengeId,
+        p_through_date: through,
+      }),
+    );
+    return (rows as Record<string, unknown>[]).map(toChallengeReset);
   }
 
   // --- Vices ----------------------------------------------------------------
