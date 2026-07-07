@@ -12,3 +12,7 @@ test-results
 .vite
 supabase/.temp
 *.tsbuildinfo
+
+# Google OAuth client-secret downloads — never commit (goes into Supabase, not git)
+client_secret*.json
+*.apps.googleusercontent.com.json
