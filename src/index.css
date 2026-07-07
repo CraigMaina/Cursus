@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * CSS custom properties mirror the Tailwind token file (tailwind.config.js).
+ * They exist so non-Tailwind contexts (canvas share-card export, raw SVG, inline
+ * style) can read the same palette without hardcoding hex. Keep in sync with the
+ * config; the config is the source of truth, this is its runtime reflection.
+ */
+:root {
+  --pompeian-red: #9e3b2e;
+  --ochre: #c08a3e;
+  --egyptian-blue: #2a4b7c;
+  --verdigris: #6b7b5a;
+  --fresco-ink: #211a15;
+  --plaster: #efe4ce;
+  --plaster-deep: #e6d8bc;
+
+  color-scheme: light;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-plaster text-ink font-sans antialiased;
+    /* Plaster grain sits under all content at low opacity. */
+    background-image: theme('backgroundImage.plaster-grain');
+    background-blend-mode: multiply;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-wide;
+  }
+}
