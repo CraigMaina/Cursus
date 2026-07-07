@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { ScaffoldScreen } from '@/app/ScaffoldScreen';
+import { SignIn, SignUp } from '@/screens/auth';
 
 /**
  * Routing map (PRD sections 4 and 8). Orchestrator-owned contract.
@@ -23,8 +24,8 @@ import { ScaffoldScreen } from '@/app/ScaffoldScreen';
  */
 export const router = createBrowserRouter([
   { path: '/', element: <ScaffoldScreen title="Today" phase="Phase 2" /> },
-  { path: '/auth/sign-in', element: <ScaffoldScreen title="Sign in" phase="Phase 1" /> },
-  { path: '/auth/sign-up', element: <ScaffoldScreen title="Sign up" phase="Phase 1" /> },
+  { path: '/auth/sign-in', element: <SignIn /> },
+  { path: '/auth/sign-up', element: <SignUp /> },
   { path: '/library', element: <ScaffoldScreen title="Challenges" phase="Phase 2" /> },
   { path: '/builder', element: <ScaffoldScreen title="Builder" phase="Phase 3" /> },
   { path: '/builder/:challengeId', element: <ScaffoldScreen title="Builder" phase="Phase 3" /> },

@@ -3,12 +3,9 @@ import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '@/app/routes';
-import { DataProvider, placeholderDataAccess } from '@/app/data-context';
+import { DataProvider } from '@/app/data-context';
+import { dataAccess } from '@/data';
 import './index.css';
-
-// TODO(integration): replace placeholderDataAccess with the concrete impl from
-// src/data once P1-A merges. Everything else stays the same.
-const dataAccess = placeholderDataAccess;
 
 const queryClient = new QueryClient({
   defaultOptions: {

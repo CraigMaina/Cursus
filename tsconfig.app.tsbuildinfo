@@ -1,1 +1,0 @@
-{"root":["./src/main.tsx","./src/vite-env.d.ts","./src/app/scaffoldscreen.tsx","./src/app/data-context.tsx","./src/app/routes.tsx","./src/config/app.ts","./src/data/dataaccess.ts","./src/data/index.ts","./src/data/mappers.ts","./src/lib/domain/dal.ts","./src/lib/domain/index.ts","./src/lib/domain/schemas.ts","./src/lib/supabase/client.ts","./test/setup.ts"],"version":"5.9.3"}
