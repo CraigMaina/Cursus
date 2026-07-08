@@ -4,7 +4,6 @@ dist-ssr
 *.local
 .env
 .env.*
-!.env.example
 .DS_Store
 coverage
 playwright-report
@@ -26,4 +25,8 @@ docs
 agents
 .claude
 tickets
+.env.example
+agent-orchestration-prompt.md
 supabase/README.md
+supabase/tests/README.md
+test/rls/README.md
