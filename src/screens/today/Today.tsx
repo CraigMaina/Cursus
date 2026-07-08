@@ -54,12 +54,14 @@ export function Today() {
                   <span className="mx-2 text-ink/30">/</span>
                   {t.challenge.strictness === 'strict' ? 'Strict' : 'Standard'}
                 </p>
-                <Link
-                  to={`/calendar/${t.challenge.id}`}
-                  className="mt-3 inline-block font-sans text-xs uppercase tracking-[0.16em] text-pompeian-red underline-offset-4 hover:underline"
-                >
-                  View the mosaic
-                </Link>
+                <div className="mt-3 flex flex-wrap gap-4 font-sans text-xs uppercase tracking-[0.16em] text-pompeian-red">
+                  <Link to={`/calendar/${t.challenge.id}`} className="underline-offset-4 hover:underline">
+                    View the mosaic
+                  </Link>
+                  <Link to={`/photos/${t.challenge.id}`} className="underline-offset-4 hover:underline">
+                    Progress photos
+                  </Link>
+                </div>
               </div>
               <MedallionBadge
                 value={t.position.dayNumber}
@@ -132,6 +134,9 @@ function TopBar() {
           </Link>
           <Link to="/vices" className="transition-colors hover:text-ink">
             Vices
+          </Link>
+          <Link to="/stats" className="transition-colors hover:text-ink">
+            Stats
           </Link>
           <Link to="/settings" className="transition-colors hover:text-ink">
             Settings

@@ -8,6 +8,7 @@ import { Calendar } from '@/screens/calendar';
 import { Vices, ViceDetail } from '@/screens/vices';
 import { Settings } from '@/screens/settings';
 import { Photos } from '@/screens/photos';
+import { Stats } from '@/screens/stats';
 
 /**
  * Routing map (PRD sections 4 and 8). Orchestrator-owned contract.
@@ -40,7 +41,7 @@ export const router = createBrowserRouter([
   { path: '/photos/:challengeId', element: <Photos /> },
   { path: '/vices', element: <Vices /> },
   { path: '/vices/:viceId', element: <ViceDetail /> },
-  { path: '/stats', element: <ScaffoldScreen title="Stats" phase="Phase 6" /> },
+  { path: '/stats', element: <Stats /> },
   { path: '/settings', element: <Settings /> },
   { path: '*', element: <ScaffoldScreen title="Not found" phase="—" /> },
 ]);
