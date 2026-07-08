@@ -84,6 +84,10 @@ export function usePhotos(challengeId: string | undefined) {
       if (!photoRule) throw new Error('This challenge has no progress-photo rule.');
       const blob = await compressImage(vars.file);
       const existing = entryByDate.get(vars.date);
+      // Ensure the day's entry exists (keeping any current photoPath so a failed upload
+      // never wipes an existing photo), store the blob, then write the returned storage
+      // path back onto the entry - uploadProgressPhoto only stores the file, it does not
+      // persist the path.
       const entry = await data.upsertEntry({
         ruleId: photoRule.id,
         entryDate: vars.date,
@@ -92,7 +96,15 @@ export function usePhotos(challengeId: string | undefined) {
         note: existing?.note ?? null,
         photoPath: existing?.photoPath ?? null,
       });
-      await data.uploadProgressPhoto(entry.id, blob);
+      const { path } = await data.uploadProgressPhoto(entry.id, blob);
+      await data.upsertEntry({
+        ruleId: photoRule.id,
+        entryDate: vars.date,
+        completed: true,
+        value: existing?.value ?? null,
+        note: existing?.note ?? null,
+        photoPath: path,
+      });
     },
     onSettled: () => {
       if (!challengeId) return;
