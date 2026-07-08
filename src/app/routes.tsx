@@ -6,6 +6,7 @@ import { Library } from '@/screens/library';
 import { Builder } from '@/screens/builder';
 import { Calendar } from '@/screens/calendar';
 import { Vices, ViceDetail } from '@/screens/vices';
+import { Settings } from '@/screens/settings';
 
 /**
  * Routing map (PRD sections 4 and 8). Orchestrator-owned contract.
@@ -38,6 +39,6 @@ export const router = createBrowserRouter([
   { path: '/vices', element: <Vices /> },
   { path: '/vices/:viceId', element: <ViceDetail /> },
   { path: '/stats', element: <ScaffoldScreen title="Stats" phase="Phase 6" /> },
-  { path: '/settings', element: <ScaffoldScreen title="Settings" phase="Phase 6" /> },
+  { path: '/settings', element: <Settings /> },
   { path: '*', element: <ScaffoldScreen title="Not found" phase="—" /> },
 ]);

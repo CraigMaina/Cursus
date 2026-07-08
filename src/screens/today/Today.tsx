@@ -133,6 +133,9 @@ function TopBar() {
           <Link to="/vices" className="transition-colors hover:text-ink">
             Vices
           </Link>
+          <Link to="/settings" className="transition-colors hover:text-ink">
+            Settings
+          </Link>
         </nav>
       </div>
     </div>

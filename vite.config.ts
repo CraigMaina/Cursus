@@ -9,9 +9,14 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      // Custom service worker (src/sw.ts) so we can handle Web Push `push` and
+      // `notificationclick` events (PRD 6), while workbox still precaches the app shell.
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      workbox: {
+      injectManifest: {
         globPatterns: ['**/*.{js,css,html,svg,woff2}'],
       },
       manifest: {
