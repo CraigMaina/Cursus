@@ -179,6 +179,9 @@ function TopBar() {
           <Link to="/vices" className="transition-colors hover:text-ink">
             Vices
           </Link>
+          <Link to="/goals" className="transition-colors hover:text-ink">
+            Goals
+          </Link>
           <Link to="/stats" className="transition-colors hover:text-ink">
             Stats
           </Link>

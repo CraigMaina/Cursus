@@ -6,6 +6,7 @@ import { Library } from '@/screens/library';
 import { Builder } from '@/screens/builder';
 import { Calendar } from '@/screens/calendar';
 import { Vices, ViceDetail } from '@/screens/vices';
+import { GoalsList, GoalDetail } from '@/screens/goals';
 import { Settings } from '@/screens/settings';
 import { Photos } from '@/screens/photos';
 import { Stats } from '@/screens/stats';
@@ -27,6 +28,8 @@ import { Stats } from '@/screens/stats';
  *   /calendar/:challengeId  Progress calendar (mosaic)
  *   /vices                  Vice tracker list
  *   /vices/:viceId          Single vice detail (days-clean, relapses, savings)
+ *   /goals                  Goals list (metric | reading | routine)
+ *   /goals/:goalId          Single goal detail (kind-specific panel)
  *   /stats                  Stats dashboard
  *   /settings               Settings and profile
  */
@@ -41,6 +44,8 @@ export const router = createBrowserRouter([
   { path: '/photos/:challengeId', element: <Photos /> },
   { path: '/vices', element: <Vices /> },
   { path: '/vices/:viceId', element: <ViceDetail /> },
+  { path: '/goals', element: <GoalsList /> },
+  { path: '/goals/:goalId', element: <GoalDetail /> },
   { path: '/stats', element: <Stats /> },
   { path: '/settings', element: <Settings /> },
   { path: '*', element: <ScaffoldScreen title="Not found" phase="—" /> },
