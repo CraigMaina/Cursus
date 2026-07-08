@@ -4,6 +4,7 @@ import { SignIn, SignUp } from '@/screens/auth';
 import { Today } from '@/screens/today';
 import { Library } from '@/screens/library';
 import { Builder } from '@/screens/builder';
+import { Calendar } from '@/screens/calendar';
 
 /**
  * Routing map (PRD sections 4 and 8). Orchestrator-owned contract.
@@ -32,7 +33,7 @@ export const router = createBrowserRouter([
   { path: '/library', element: <Library /> },
   { path: '/builder', element: <Builder /> },
   { path: '/builder/:challengeId', element: <Builder /> },
-  { path: '/calendar/:challengeId', element: <ScaffoldScreen title="Calendar" phase="Phase 3" /> },
+  { path: '/calendar/:challengeId', element: <Calendar /> },
   { path: '/vices', element: <ScaffoldScreen title="Vices" phase="Phase 4" /> },
   { path: '/vices/:viceId', element: <ScaffoldScreen title="Vice" phase="Phase 4" /> },
   { path: '/stats', element: <ScaffoldScreen title="Stats" phase="Phase 6" /> },

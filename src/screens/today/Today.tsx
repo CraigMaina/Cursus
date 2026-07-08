@@ -54,6 +54,12 @@ export function Today() {
                   <span className="mx-2 text-ink/30">/</span>
                   {t.challenge.strictness === 'strict' ? 'Strict' : 'Standard'}
                 </p>
+                <Link
+                  to={`/calendar/${t.challenge.id}`}
+                  className="mt-3 inline-block font-sans text-xs uppercase tracking-[0.16em] text-pompeian-red underline-offset-4 hover:underline"
+                >
+                  View the mosaic
+                </Link>
               </div>
               <MedallionBadge
                 value={t.position.dayNumber}
