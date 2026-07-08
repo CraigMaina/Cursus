@@ -130,6 +130,9 @@ function TopBar() {
           <Link to="/library" className="transition-colors hover:text-ink">
             Challenges
           </Link>
+          <Link to="/vices" className="transition-colors hover:text-ink">
+            Vices
+          </Link>
         </nav>
       </div>
     </div>
