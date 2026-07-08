@@ -3,6 +3,7 @@ import { ScaffoldScreen } from '@/app/ScaffoldScreen';
 import { SignIn, SignUp } from '@/screens/auth';
 import { Today } from '@/screens/today';
 import { Library } from '@/screens/library';
+import { Builder } from '@/screens/builder';
 
 /**
  * Routing map (PRD sections 4 and 8). Orchestrator-owned contract.
@@ -29,8 +30,8 @@ export const router = createBrowserRouter([
   { path: '/auth/sign-in', element: <SignIn /> },
   { path: '/auth/sign-up', element: <SignUp /> },
   { path: '/library', element: <Library /> },
-  { path: '/builder', element: <ScaffoldScreen title="Builder" phase="Phase 3" /> },
-  { path: '/builder/:challengeId', element: <ScaffoldScreen title="Builder" phase="Phase 3" /> },
+  { path: '/builder', element: <Builder /> },
+  { path: '/builder/:challengeId', element: <Builder /> },
   { path: '/calendar/:challengeId', element: <ScaffoldScreen title="Calendar" phase="Phase 3" /> },
   { path: '/vices', element: <ScaffoldScreen title="Vices" phase="Phase 4" /> },
   { path: '/vices/:viceId', element: <ScaffoldScreen title="Vice" phase="Phase 4" /> },
