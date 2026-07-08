@@ -6,8 +6,10 @@
 // day held), then fans out web push and email. All the "who and when" logic is in SQL;
 // this function only delivers.
 //
-// Deploy (Supabase Dashboard -> Edge Functions -> new function "notify", paste this),
-// then set these Function secrets:
+// Deploy (Supabase Dashboard -> Edge Functions -> new function "notify", paste this)
+// with "Verify JWT" DISABLED: the cron sends CRON_SECRET, not a Supabase JWT, so the
+// platform JWT layer must be off and this function's own CRON_SECRET check is the guard.
+// Then set these Function secrets:
 //   CRON_SECRET            shared secret; must match the Bearer the cron sends
 //   VAPID_PUBLIC_KEY       web-push VAPID public key
 //   VAPID_PRIVATE_KEY      web-push VAPID private key
