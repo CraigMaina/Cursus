@@ -4,6 +4,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
+// note: profile greeting + abandon-challenge added for personalization
 import { useData } from '@/app/data-context';
 import type { Challenge, Entry, Rule } from '@/lib/domain/schemas';
 import { isMilestone } from '@/lib/domain/compute';
@@ -52,6 +53,24 @@ export function useToday() {
     queryKey: ['challenges'],
     queryFn: () => data.listChallenges(),
     enabled: authed,
+  });
+
+  // Profile drives the greeting ("Onward, {name}").
+  const profileQuery = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => data.getProfile(),
+    enabled: authed,
+    staleTime: 60_000,
+  });
+
+  // Abandon (soft-archive) the active challenge; it then drops off Today.
+  const abandonMutation = useMutation({
+    mutationFn: (challengeId: string) => data.archiveChallenge(challengeId),
+    onSuccess: () => {
+      // The archived challenge drops out of the list; the selection falls back to the
+      // next active one (or the empty state) on its own.
+      void queryClient.invalidateQueries({ queryKey: ['challenges'] });
+    },
   });
 
   const active = useMemo(() => {
@@ -215,5 +234,8 @@ export function useToday() {
     milestoneDay,
     quote: quoteQuery.data ?? null,
     quoteLoading: quoteQuery.isLoading,
+    displayName: profileQuery.data?.displayName ?? null,
+    abandon: (challengeId: string) => abandonMutation.mutate(challengeId),
+    abandoning: abandonMutation.isPending,
   };
 }

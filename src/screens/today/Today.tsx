@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { APP_NAME } from '@/config/app';
 import {
@@ -44,6 +45,7 @@ export function Today() {
             <header className="flex flex-wrap items-center justify-between gap-6">
               <div className="min-w-0">
                 <p className="font-sans text-xs uppercase tracking-[0.28em] text-ochre">
+                  {t.displayName ? `${t.displayName}, ` : ''}
                   {formatLongDate(t.today)}
                 </p>
                 <h1 className="mt-2 font-display text-4xl text-ink sm:text-5xl">
@@ -61,6 +63,13 @@ export function Today() {
                   <Link to={`/photos/${t.challenge.id}`} className="underline-offset-4 hover:underline">
                     Progress photos
                   </Link>
+                  <Link to={`/builder/${t.challenge.id}`} className="underline-offset-4 hover:underline">
+                    Edit rules
+                  </Link>
+                  <AbandonControl
+                    onConfirm={() => t.abandon(t.challenge!.id)}
+                    busy={t.abandoning}
+                  />
                 </div>
               </div>
               <MedallionBadge
@@ -115,6 +124,41 @@ export function Today() {
         )}
       </main>
     </div>
+  );
+}
+
+function AbandonControl({ onConfirm, busy }: { onConfirm: () => void; busy: boolean }) {
+  const [confirming, setConfirming] = useState(false);
+  if (!confirming) {
+    return (
+      <button
+        type="button"
+        onClick={() => setConfirming(true)}
+        className="uppercase tracking-[0.16em] text-ink/45 underline-offset-4 hover:text-pompeian-red hover:underline"
+      >
+        Abandon
+      </button>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-3 normal-case tracking-normal">
+      <span className="font-serif text-ink/60">Abandon this challenge?</span>
+      <button
+        type="button"
+        disabled={busy}
+        onClick={onConfirm}
+        className="uppercase tracking-[0.16em] text-pompeian-red underline-offset-4 hover:underline"
+      >
+        {busy ? 'Ending' : 'Yes, end it'}
+      </button>
+      <button
+        type="button"
+        onClick={() => setConfirming(false)}
+        className="uppercase tracking-[0.16em] text-ink/45 underline-offset-4 hover:underline"
+      >
+        Keep going
+      </button>
+    </span>
   );
 }
 

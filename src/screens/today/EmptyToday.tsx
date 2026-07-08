@@ -31,9 +31,12 @@ export function EmptyToday({ authed }: { authed: boolean }) {
         Pick a protocol from the library, set your start date, and day one begins. The
         original 75 Hard is there, alongside gentler formats.
       </p>
-      <div className="mt-6">
+      <div className="mt-6 flex flex-wrap items-center gap-3">
         <Link to="/library">
           <SealButton size="lg">Browse the challenge library</SealButton>
+        </Link>
+        <Link to="/builder">
+          <SealButton size="lg" variant="ochre">Build your own</SealButton>
         </Link>
       </div>
     </Plaque>

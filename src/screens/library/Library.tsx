@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { APP_NAME } from '@/config/app';
-import { MeanderDivider } from '@/components/primitives';
+import { MeanderDivider, SealButton } from '@/components/primitives';
 import type { Template } from '@/lib/domain/schemas';
 import { useLibrary } from './useLibrary';
 import { TemplatePlaque } from './TemplatePlaque';
@@ -32,8 +32,13 @@ export function Library() {
           <p className="mt-3 font-serif text-lg text-ink/70">
             Each plaque is a protocol you can commit to. Start one and day one begins on
             the date you set. The original 75 Hard is faithful to the letter; the softer
-            formats trade severity for staying power.
+            formats trade severity for staying power. Or write your own from scratch.
           </p>
+          <div className="mt-5">
+            <Link to="/builder">
+              <SealButton variant="ochre">Build your own challenge</SealButton>
+            </Link>
+          </div>
         </header>
 
         <MeanderDivider tone="text-ochre/60" height={14} className="my-8" />
