@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { APP_NAME } from '@/config/app';
+import { useData } from '@/app/data-context';
 import { MeanderDivider, Plaque, SealButton } from '@/components/primitives';
 import { cx } from '@/theme';
 import { useSettings } from './useSettings';
 import { useNotifications } from './useNotifications';
+import { useInstallPrompt } from './useInstallPrompt';
 
 /**
  * Settings (PRD 6). Two plaques: the profile (display name, timezone, evening threshold
@@ -62,6 +64,7 @@ export function Settings() {
                 Could not save. Check your connection and try again.
               </p>
             ) : null}
+            <DataSection />
           </div>
         )}
       </main>
@@ -279,6 +282,61 @@ function PushControl({ push }: { push: ReturnType<typeof useNotifications> }) {
       )}
       {push.error ? <span className="font-sans text-sm text-pompeian-red">{push.error}</span> : null}
     </div>
+  );
+}
+
+function DataSection() {
+  const data = useData();
+  const install = useInstallPrompt();
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState(false);
+
+  async function handleExport() {
+    setExporting(true);
+    setExportError(false);
+    try {
+      const dump = await data.exportAllData();
+      const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `cursus-export-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      setExportError(true);
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  return (
+    <Plaque as="section" className="p-6 sm:p-8">
+      <h2 className="font-display text-2xl text-ink">Your data and app</h2>
+      <p className="mt-1 font-serif text-ink/60">
+        Everything you have recorded is yours. Take it with you or install Cursus as an app.
+      </p>
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        <SealButton variant="egyptian" size="sm" disabled={exporting} onClick={() => void handleExport()}>
+          {exporting ? 'Preparing' : 'Export my data (JSON)'}
+        </SealButton>
+        {install.canInstall ? (
+          <SealButton variant="ochre" size="sm" onClick={() => void install.promptInstall()}>
+            Install Cursus
+          </SealButton>
+        ) : install.installed ? (
+          <span className="font-sans text-sm text-verdigris">Installed as an app.</span>
+        ) : null}
+        <SealButton variant="ghost" size="sm" onClick={() => void data.signOut()}>
+          Sign out
+        </SealButton>
+      </div>
+      {exportError ? (
+        <p role="alert" className="mt-3 font-sans text-sm text-pompeian-red">
+          Could not build the export. Try again.
+        </p>
+      ) : null}
+    </Plaque>
   );
 }
 
