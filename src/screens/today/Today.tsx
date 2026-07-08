@@ -107,7 +107,7 @@ export function Today() {
             ) : null}
 
             {t.dayComplete ? (
-              <DayComplete quote={t.quote} loading={t.quoteLoading} />
+              <DayComplete quote={t.quote} loading={t.quoteLoading} milestone={t.milestoneDay} />
             ) : null}
           </>
         )}

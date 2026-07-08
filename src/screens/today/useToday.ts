@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { useData } from '@/app/data-context';
 import type { Challenge, Entry, Rule } from '@/lib/domain/schemas';
+import { isMilestone } from '@/lib/domain/compute';
 import { computeDay, todayIso, type DayPosition } from './dates';
 
 /**
@@ -170,12 +171,17 @@ export function useToday() {
   const dayComplete =
     requiredDaily.length > 0 && requiredDaily.every((rv) => rv.completed);
 
+  // On a milestone day (7, 21, 30, ...) the reward is elevated to a carved
+  // `milestone` quote (PRD 4.1 #8); otherwise it is the steady `daily` encouragement.
+  const milestoneDay = position && isMilestone(position.dayNumber) ? position.dayNumber : null;
+  const rewardCategory = milestoneDay ? 'milestone' : 'daily';
+
   // Session-scoped memory of shown quotes, so the reward does not repeat.
   const shownQuoteIds = useRef<string[]>([]);
   const quoteQuery = useQuery({
-    queryKey: ['reward-daily', challenge?.id, today, dayComplete],
+    queryKey: ['reward', rewardCategory, challenge?.id, today, dayComplete],
     queryFn: async () => {
-      const q = await data.getRewardQuote('daily', shownQuoteIds.current);
+      const q = await data.getRewardQuote(rewardCategory, shownQuoteIds.current);
       if (!shownQuoteIds.current.includes(q.id)) shownQuoteIds.current.push(q.id);
       return q;
     },
@@ -206,6 +212,7 @@ export function useToday() {
     committing: commitMutation.isPending,
     commitError: commitMutation.error,
     dayComplete,
+    milestoneDay,
     quote: quoteQuery.data ?? null,
     quoteLoading: quoteQuery.isLoading,
   };
