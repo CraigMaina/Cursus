@@ -4,6 +4,7 @@ import { APP_NAME } from '@/config/app';
 import { useData } from '@/app/data-context';
 import { MeanderDivider, Plaque, SealButton } from '@/components/primitives';
 import { cx } from '@/theme';
+import { getDensity, applyDensity, type Density } from '@/app/density';
 import { useSettings } from './useSettings';
 import { useNotifications } from './useNotifications';
 import { useInstallPrompt } from './useInstallPrompt';
@@ -285,6 +286,39 @@ function PushControl({ push }: { push: ReturnType<typeof useNotifications> }) {
   );
 }
 
+function DensityControl() {
+  const [density, setDensity] = useState<Density>(getDensity());
+  const choose = (d: Density) => {
+    applyDensity(d);
+    setDensity(d);
+  };
+  const opts: { value: Density; label: string }[] = [
+    { value: 'comfortable', label: 'Comfortable' },
+    { value: 'compact', label: 'Compact' },
+  ];
+  return (
+    <div className="mt-2 inline-flex overflow-hidden rounded-plaque border border-ink/25" role="group" aria-label="Density">
+      {opts.map((o) => {
+        const active = density === o.value;
+        return (
+          <button
+            key={o.value}
+            type="button"
+            aria-pressed={active}
+            onClick={() => choose(o.value)}
+            className={cx(
+              'px-4 py-1.5 font-sans text-xs uppercase tracking-[0.12em] transition-colors',
+              active ? 'bg-ink text-plaster' : 'text-ink/70 hover:bg-ink/5',
+            )}
+          >
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function DataSection() {
   const data = useData();
   const install = useInstallPrompt();
@@ -316,6 +350,14 @@ function DataSection() {
       <p className="mt-1 font-serif text-ink/60">
         Everything you have recorded is yours. Take it with you or install Cursus as an app.
       </p>
+
+      <div className="mt-6">
+        <p className="font-sans text-xs uppercase tracking-[0.16em] text-ink/55">Density</p>
+        <DensityControl />
+      </div>
+
+      <MeanderDivider tone="text-ochre/40" height={12} className="my-6 max-w-sm" />
+
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <SealButton variant="egyptian" size="sm" disabled={exporting} onClick={() => void handleExport()}>
           {exporting ? 'Preparing' : 'Export my data (JSON)'}

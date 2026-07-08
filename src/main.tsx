@@ -5,13 +5,24 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from '@/app/routes';
 import { DataProvider } from '@/app/data-context';
 import { dataAccess } from '@/data';
+import { initDensity } from '@/app/density';
 import './index.css';
+
+// Apply the saved UI density before first paint (no flash).
+initDensity();
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 30_000,
       retry: 1,
+    },
+    mutations: {
+      // Offline-first: when the network returns, paused mutations resume; retry a few
+      // times so a flaky reconnect still lands the write. Optimistic onMutate already
+      // reflects the change locally (see useToday).
+      retry: 3,
+      retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 15_000),
     },
   },
 });

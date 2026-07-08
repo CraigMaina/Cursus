@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { APP_NAME } from '@/config/app';
 import { MeanderDivider } from '@/components/primitives';
@@ -10,6 +10,7 @@ import { CompletionChart } from './CompletionChart';
 import { RuleAdherence } from './RuleAdherence';
 import { StreakFigures } from './StreakFigures';
 import { MilestoneStrip } from './MilestoneStrip';
+import { renderShareCardBlob, shareOrDownloadCard } from './shareCard';
 
 /**
  * Stats dashboard (PRD 4.1 #9, 4.2). Completion over time, per-rule adherence, streak
@@ -70,12 +71,26 @@ export function Stats() {
                   <span className="mx-2 text-ink/30">/</span>
                   {s.challenge.strictness === 'strict' ? 'Strict' : 'Standard'}
                 </p>
-                <Link
-                  to={`/calendar/${s.challenge.id}`}
-                  className="mt-3 inline-block font-sans text-xs uppercase tracking-[0.16em] text-pompeian-red underline-offset-4 hover:underline"
-                >
-                  View the mosaic
-                </Link>
+                <div className="mt-3 flex flex-wrap items-center gap-4">
+                  <Link
+                    to={`/calendar/${s.challenge.id}`}
+                    className="font-sans text-xs uppercase tracking-[0.16em] text-pompeian-red underline-offset-4 hover:underline"
+                  >
+                    View the mosaic
+                  </Link>
+                  {s.stats ? (
+                    <ShareCardButton
+                      data={{
+                        appName: APP_NAME,
+                        challengeName: s.challenge.name,
+                        elapsedDays: s.stats.elapsedDays,
+                        strictness: s.challenge.strictness === 'strict' ? 'strict' : 'standard',
+                        currentStreak: s.stats.currentStreak,
+                        overallPct: overallPct(s.stats),
+                      }}
+                    />
+                  ) : null}
+                </div>
               </div>
             </header>
 
@@ -112,6 +127,32 @@ export function Stats() {
         )}
       </main>
     </div>
+  );
+}
+
+function ShareCardButton({ data }: { data: Parameters<typeof renderShareCardBlob>[0] }) {
+  const [busy, setBusy] = useState(false);
+  async function onShare() {
+    setBusy(true);
+    try {
+      const blob = await renderShareCardBlob(data);
+      const slug = data.challengeName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      await shareOrDownloadCard(blob, `cursus-${slug || 'progress'}.png`);
+    } catch {
+      /* canvas/share unsupported; nothing to surface beyond the no-op */
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <button
+      type="button"
+      onClick={() => void onShare()}
+      disabled={busy}
+      className="font-sans text-xs uppercase tracking-[0.16em] text-pompeian-red underline-offset-4 hover:underline disabled:opacity-50"
+    >
+      {busy ? 'Drawing' : 'Share a card'}
+    </button>
   );
 }
 

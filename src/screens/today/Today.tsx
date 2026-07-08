@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { APP_NAME } from '@/config/app';
+import { useOnline, usePausedMutationCount } from '@/app/useNetwork';
 import {
   MeanderDivider,
   MedallionBadge,
@@ -29,6 +30,7 @@ export function Today() {
   return (
     <div className="min-h-full">
       <TopBar />
+      <OfflineBanner />
 
       <main className="mx-auto w-full max-w-3xl px-6 pb-24 pt-8 sm:px-8">
         {t.loading ? (
@@ -123,6 +125,22 @@ export function Today() {
           </>
         )}
       </main>
+    </div>
+  );
+}
+
+function OfflineBanner() {
+  const online = useOnline();
+  const pending = usePausedMutationCount();
+  if (online && pending === 0) return null;
+  return (
+    <div
+      role="status"
+      className="border-b border-ochre/40 bg-ochre/15 px-6 py-2 text-center font-sans text-xs uppercase tracking-[0.16em] text-ink/70 sm:px-8"
+    >
+      {online
+        ? `Syncing ${pending} ${pending === 1 ? 'change' : 'changes'}.`
+        : 'Offline. Your marks are saved here and will sync when you reconnect.'}
     </div>
   );
 }
