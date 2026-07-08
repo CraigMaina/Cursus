@@ -130,6 +130,7 @@ export function toVice(row: Row): Vice {
     costPerUnit: num(row.cost_per_unit),
     timePerUnitMinutes: num(row.time_per_unit_minutes),
     unitLabel: row.unit_label ?? null,
+    dailyUnits: num(row.daily_units),
     isArchived: row.is_archived,
   });
 }
@@ -225,6 +226,7 @@ export function viceToRow(input: NewViceInput): Row {
     cost_per_unit: input.costPerUnit ?? null,
     time_per_unit_minutes: input.timePerUnitMinutes ?? null,
     unit_label: input.unitLabel ?? null,
+    daily_units: input.dailyUnits ?? null,
   };
 }
 
@@ -237,6 +239,7 @@ export function vicePatchToRow(patch: Partial<NewViceInput>): Row {
   if (patch.costPerUnit !== undefined) row.cost_per_unit = patch.costPerUnit;
   if (patch.timePerUnitMinutes !== undefined) row.time_per_unit_minutes = patch.timePerUnitMinutes;
   if (patch.unitLabel !== undefined) row.unit_label = patch.unitLabel;
+  if (patch.dailyUnits !== undefined) row.daily_units = patch.dailyUnits;
   return row;
 }
 

@@ -156,6 +156,7 @@ export const viceSchema = z.object({
   costPerUnit: z.number().nonnegative().nullable(),
   timePerUnitMinutes: z.number().nonnegative().nullable(),
   unitLabel: z.string().max(40).nullable(), // e.g. 'cigarette', 'drink'
+  dailyUnits: z.number().nonnegative().nullable().default(null), // units/day avoided; drives savings
   isArchived: z.boolean().default(false),
 });
 export type Vice = z.infer<typeof viceSchema>;
