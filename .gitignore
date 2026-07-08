@@ -16,3 +16,14 @@ supabase/.temp
 # Google OAuth client-secret downloads — never commit (goes into Supabase, not git)
 client_secret*.json
 *.apps.googleusercontent.com.json
+.env.local
+ARCHITECTURE.md
+CLAUDE.md
+DECISIONS.md
+PRD.md
+TASKS.md
+docs
+agents
+.claude
+tickets
+supabase/README.md
