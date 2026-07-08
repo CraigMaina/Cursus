@@ -222,3 +222,112 @@ export type NewViceInput = z.infer<typeof newViceInput>;
 
 export const newRelapseInput = relapseSchema.omit({ id: true });
 export type NewRelapseInput = z.infer<typeof newRelapseInput>;
+
+// ---------------------------------------------------------------------------
+// Goals (D16) — one Goals area, three kinds: metric | reading | routine
+// ---------------------------------------------------------------------------
+
+export const goalKindEnum = z.enum(['metric', 'reading', 'routine']);
+export type GoalKind = z.infer<typeof goalKindEnum>;
+
+/** For a metric goal: is the target below, above, or at the start value. */
+export const metricDirectionEnum = z.enum(['down', 'up', 'maintain']);
+export type MetricDirection = z.infer<typeof metricDirectionEnum>;
+
+export const goalSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string().uuid(),
+  kind: goalKindEnum,
+  name: z.string().min(1).max(120),
+  // metric-only (null for other kinds)
+  unit: z.string().max(24).nullable(),
+  startValue: z.number().nullable(),
+  targetValue: z.number().nullable(),
+  direction: metricDirectionEnum.nullable(),
+  // reading-only (null otherwise)
+  targetCount: z.number().int().nonnegative().nullable(),
+  isArchived: z.boolean().default(false),
+  createdAt: isoDateTime,
+});
+export type Goal = z.infer<typeof goalSchema>;
+
+/** A metric measurement on a date (weight, body fat, ...). */
+export const metricEntrySchema = z.object({
+  id: z.string().uuid(),
+  goalId: z.string().uuid(),
+  entryDate: isoDate,
+  value: z.number(),
+  note: z.string().max(2000).nullable(),
+});
+export type MetricEntry = z.infer<typeof metricEntrySchema>;
+
+/** A book logged against a reading goal. */
+export const bookSchema = z.object({
+  id: z.string().uuid(),
+  goalId: z.string().uuid(),
+  title: z.string().min(1).max(300),
+  author: z.string().max(200).nullable(),
+  finishedDate: isoDate.nullable(),
+  rating: z.number().int().min(1).max(5).nullable(),
+  note: z.string().max(2000).nullable(),
+});
+export type Book = z.infer<typeof bookSchema>;
+
+/** An exercise in a routine's template (target sets/reps/weight). */
+export const routineExerciseSchema = z.object({
+  id: z.string().uuid(),
+  goalId: z.string().uuid(),
+  name: z.string().min(1).max(120),
+  targetSets: z.number().int().nonnegative().nullable(),
+  targetReps: z.number().int().nonnegative().nullable(),
+  targetWeight: z.number().nullable(),
+  unit: z.string().max(12).nullable(), // 'kg' | 'lb'
+  sortOrder: z.number().int(),
+});
+export type RoutineExercise = z.infer<typeof routineExerciseSchema>;
+
+/** A logged workout session for a routine goal. */
+export const workoutSessionSchema = z.object({
+  id: z.string().uuid(),
+  goalId: z.string().uuid(),
+  sessionDate: isoDate,
+  note: z.string().max(2000).nullable(),
+  createdAt: isoDateTime,
+});
+export type WorkoutSession = z.infer<typeof workoutSessionSchema>;
+
+/** One actual set performed within a session. */
+export const workoutSetSchema = z.object({
+  id: z.string().uuid(),
+  sessionId: z.string().uuid(),
+  exerciseId: z.string().uuid().nullable(),
+  exerciseName: z.string().min(1).max(120),
+  setNumber: z.number().int().positive(),
+  reps: z.number().int().nonnegative().nullable(),
+  weight: z.number().nullable(),
+});
+export type WorkoutSet = z.infer<typeof workoutSetSchema>;
+
+// Input schemas (omit server-owned fields)
+export const newGoalInput = goalSchema.omit({ id: true, userId: true, isArchived: true, createdAt: true });
+export type NewGoalInput = z.infer<typeof newGoalInput>;
+
+export const newMetricEntryInput = metricEntrySchema.omit({ id: true });
+export type NewMetricEntryInput = z.infer<typeof newMetricEntryInput>;
+
+export const newBookInput = bookSchema.omit({ id: true });
+export type NewBookInput = z.infer<typeof newBookInput>;
+
+export const newRoutineExerciseInput = routineExerciseSchema.omit({ id: true });
+export type NewRoutineExerciseInput = z.infer<typeof newRoutineExerciseInput>;
+
+/** Logging a session sends the session plus its sets in one call. */
+export const newWorkoutSetInput = workoutSetSchema.omit({ id: true, sessionId: true });
+export type NewWorkoutSetInput = z.infer<typeof newWorkoutSetInput>;
+export const logWorkoutInput = z.object({
+  goalId: z.string().uuid(),
+  sessionDate: isoDate,
+  note: z.string().max(2000).nullable(),
+  sets: z.array(newWorkoutSetInput),
+});
+export type LogWorkoutInput = z.infer<typeof logWorkoutInput>;

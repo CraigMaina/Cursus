@@ -1,8 +1,15 @@
 import type {
+  Book,
   Challenge,
   ChallengeReset,
   Entry,
+  Goal,
+  LogWorkoutInput,
+  MetricEntry,
+  NewBookInput,
   NewChallengeInput,
+  NewGoalInput,
+  NewMetricEntryInput,
   NewRelapseInput,
   NewViceInput,
   NotificationPrefs,
@@ -10,10 +17,13 @@ import type {
   Quote,
   QuoteCategory,
   Relapse,
+  RoutineExercise,
   Rule,
   Template,
   UpsertEntryInput,
   Vice,
+  WorkoutSession,
+  WorkoutSet,
 } from './schemas';
 
 /**
@@ -69,6 +79,28 @@ export interface CursusDataAccess {
   archiveVice(viceId: string): Promise<void>;
   listRelapses(viceId: string): Promise<Relapse[]>;
   logRelapse(input: NewRelapseInput): Promise<Relapse>;
+
+  // --- Goals (D16): metric | reading | routine ----------------------------
+  listGoals(opts?: { includeArchived?: boolean }): Promise<Goal[]>;
+  createGoal(input: NewGoalInput): Promise<Goal>;
+  updateGoal(goalId: string, patch: Partial<NewGoalInput>): Promise<Goal>;
+  archiveGoal(goalId: string): Promise<void>;
+  // metric
+  listMetricEntries(goalId: string): Promise<MetricEntry[]>;
+  addMetricEntry(input: NewMetricEntryInput): Promise<MetricEntry>; // upsert by (goalId, entryDate)
+  deleteMetricEntry(entryId: string): Promise<void>;
+  // reading
+  listBooks(goalId: string): Promise<Book[]>;
+  addBook(input: NewBookInput): Promise<Book>;
+  updateBook(bookId: string, patch: Partial<NewBookInput>): Promise<Book>;
+  deleteBook(bookId: string): Promise<void>;
+  // routine (detailed: exercises template + logged sessions with sets)
+  listRoutineExercises(goalId: string): Promise<RoutineExercise[]>;
+  replaceRoutineExercises(goalId: string, exercises: Omit<RoutineExercise, 'id' | 'goalId'>[]): Promise<RoutineExercise[]>;
+  listWorkoutSessions(goalId: string): Promise<WorkoutSession[]>;
+  getWorkoutSets(sessionId: string): Promise<WorkoutSet[]>;
+  logWorkout(input: LogWorkoutInput): Promise<WorkoutSession>; // creates session + its sets
+  deleteWorkoutSession(sessionId: string): Promise<void>;
 
   // --- Quotes (world-readable) --------------------------------------------
   getRewardQuote(category: QuoteCategory, excludeIds?: string[]): Promise<Quote>;

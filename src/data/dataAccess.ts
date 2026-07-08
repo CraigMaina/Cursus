@@ -18,10 +18,21 @@ import {
   newRuleInput,
   newViceInput,
   upsertEntryInput,
+  newGoalInput,
+  newMetricEntryInput,
+  newBookInput,
+  logWorkoutInput,
+  type Book,
   type Challenge,
   type ChallengeReset,
   type Entry,
+  type Goal,
+  type LogWorkoutInput,
+  type MetricEntry,
+  type NewBookInput,
   type NewChallengeInput,
+  type NewGoalInput,
+  type NewMetricEntryInput,
   type NewRelapseInput,
   type NewViceInput,
   type NotificationPrefs,
@@ -29,10 +40,13 @@ import {
   type Quote,
   type QuoteCategory,
   type Relapse,
+  type RoutineExercise,
   type Rule,
   type Template,
   type UpsertEntryInput,
   type Vice,
+  type WorkoutSession,
+  type WorkoutSet,
 } from '@/lib/domain/schemas';
 import {
   challengePatchToRow,
@@ -53,6 +67,20 @@ import {
   vicePatchToRow,
   viceToRow,
 } from './mappers';
+import {
+  toGoal,
+  toMetricEntry,
+  toBook,
+  toRoutineExercise,
+  toWorkoutSession,
+  toWorkoutSet,
+  goalToRow,
+  goalPatchToRow,
+  metricEntryToRow,
+  bookToRow,
+  bookPatchToRow,
+  routineExerciseToRow,
+} from './goalMappers';
 
 const PHOTO_BUCKET = 'progress-photos';
 const SIGNED_URL_TTL_SECONDS = 60 * 60; // 1 hour
@@ -397,6 +425,169 @@ export class SupabaseDataAccess implements CursusDataAccess {
       await this.sb.from('relapses').insert(relapseToRow(parsed)).select('*').single(),
     );
     return toRelapse(row as Record<string, unknown>);
+  }
+
+  // --- Goals (D16) ----------------------------------------------------------
+  async listGoals(opts?: { includeArchived?: boolean }): Promise<Goal[]> {
+    let query = this.sb.from('goals').select('*');
+    if (!opts?.includeArchived) query = query.eq('is_archived', false);
+    const rows = unwrap(await query.order('created_at', { ascending: true }));
+    return (rows as Record<string, unknown>[]).map(toGoal);
+  }
+
+  async createGoal(input: NewGoalInput): Promise<Goal> {
+    const parsed = newGoalInput.parse(input);
+    const row = unwrap(
+      await this.sb.from('goals').insert(goalToRow(parsed)).select('*').single(),
+    );
+    return toGoal(row as Record<string, unknown>);
+  }
+
+  async updateGoal(goalId: string, patch: Partial<NewGoalInput>): Promise<Goal> {
+    const row = unwrap(
+      await this.sb.from('goals').update(goalPatchToRow(patch)).eq('id', goalId).select('*').single(),
+    );
+    return toGoal(row as Record<string, unknown>);
+  }
+
+  async archiveGoal(goalId: string): Promise<void> {
+    unwrap(await this.sb.from('goals').update({ is_archived: true }).eq('id', goalId).select('id'));
+  }
+
+  async listMetricEntries(goalId: string): Promise<MetricEntry[]> {
+    const rows = unwrap(
+      await this.sb
+        .from('goal_metric_entries')
+        .select('*')
+        .eq('goal_id', goalId)
+        .order('entry_date', { ascending: true }),
+    );
+    return (rows as Record<string, unknown>[]).map(toMetricEntry);
+  }
+
+  async addMetricEntry(input: NewMetricEntryInput): Promise<MetricEntry> {
+    const parsed = newMetricEntryInput.parse(input);
+    const row = unwrap(
+      await this.sb
+        .from('goal_metric_entries')
+        .upsert(metricEntryToRow(parsed), { onConflict: 'goal_id,entry_date' })
+        .select('*')
+        .single(),
+    );
+    return toMetricEntry(row as Record<string, unknown>);
+  }
+
+  async deleteMetricEntry(entryId: string): Promise<void> {
+    unwrap(await this.sb.from('goal_metric_entries').delete().eq('id', entryId).select('id'));
+  }
+
+  async listBooks(goalId: string): Promise<Book[]> {
+    const rows = unwrap(
+      await this.sb
+        .from('goal_books')
+        .select('*')
+        .eq('goal_id', goalId)
+        .order('finished_date', { ascending: false, nullsFirst: false }),
+    );
+    return (rows as Record<string, unknown>[]).map(toBook);
+  }
+
+  async addBook(input: NewBookInput): Promise<Book> {
+    const parsed = newBookInput.parse(input);
+    const row = unwrap(
+      await this.sb.from('goal_books').insert(bookToRow(parsed)).select('*').single(),
+    );
+    return toBook(row as Record<string, unknown>);
+  }
+
+  async updateBook(bookId: string, patch: Partial<NewBookInput>): Promise<Book> {
+    const row = unwrap(
+      await this.sb.from('goal_books').update(bookPatchToRow(patch)).eq('id', bookId).select('*').single(),
+    );
+    return toBook(row as Record<string, unknown>);
+  }
+
+  async deleteBook(bookId: string): Promise<void> {
+    unwrap(await this.sb.from('goal_books').delete().eq('id', bookId).select('id'));
+  }
+
+  async listRoutineExercises(goalId: string): Promise<RoutineExercise[]> {
+    const rows = unwrap(
+      await this.sb
+        .from('routine_exercises')
+        .select('*')
+        .eq('goal_id', goalId)
+        .order('sort_order', { ascending: true }),
+    );
+    return (rows as Record<string, unknown>[]).map(toRoutineExercise);
+  }
+
+  async replaceRoutineExercises(
+    goalId: string,
+    exercises: Omit<RoutineExercise, 'id' | 'goalId'>[],
+  ): Promise<RoutineExercise[]> {
+    // Replace the template wholesale (delete then insert), mirroring replaceRules.
+    unwrap(await this.sb.from('routine_exercises').delete().eq('goal_id', goalId).select('id'));
+    if (exercises.length === 0) return [];
+    const rows = unwrap(
+      await this.sb
+        .from('routine_exercises')
+        .insert(exercises.map((ex) => routineExerciseToRow(goalId, ex)))
+        .select('*'),
+    );
+    return (rows as Record<string, unknown>[]).map(toRoutineExercise);
+  }
+
+  async listWorkoutSessions(goalId: string): Promise<WorkoutSession[]> {
+    const rows = unwrap(
+      await this.sb
+        .from('workout_sessions')
+        .select('*')
+        .eq('goal_id', goalId)
+        .order('session_date', { ascending: false }),
+    );
+    return (rows as Record<string, unknown>[]).map(toWorkoutSession);
+  }
+
+  async getWorkoutSets(sessionId: string): Promise<WorkoutSet[]> {
+    const rows = unwrap(
+      await this.sb
+        .from('workout_sets')
+        .select('*')
+        .eq('session_id', sessionId)
+        .order('set_number', { ascending: true }),
+    );
+    return (rows as Record<string, unknown>[]).map(toWorkoutSet);
+  }
+
+  async logWorkout(input: LogWorkoutInput): Promise<WorkoutSession> {
+    const parsed = logWorkoutInput.parse(input);
+    const session = unwrap(
+      await this.sb
+        .from('workout_sessions')
+        .insert({ goal_id: parsed.goalId, session_date: parsed.sessionDate, note: parsed.note ?? null })
+        .select('*')
+        .single(),
+    ) as Record<string, unknown>;
+    if (parsed.sets.length > 0) {
+      unwrap(
+        await this.sb.from('workout_sets').insert(
+          parsed.sets.map((s) => ({
+            session_id: session.id,
+            exercise_id: s.exerciseId ?? null,
+            exercise_name: s.exerciseName,
+            set_number: s.setNumber,
+            reps: s.reps ?? null,
+            weight: s.weight ?? null,
+          })),
+        ).select('id'),
+      );
+    }
+    return toWorkoutSession(session);
+  }
+
+  async deleteWorkoutSession(sessionId: string): Promise<void> {
+    unwrap(await this.sb.from('workout_sessions').delete().eq('id', sessionId).select('id'));
   }
 
   // --- Quotes (world-readable) ----------------------------------------------
