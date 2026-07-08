@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { APP_NAME } from '@/config/app';
+import { AppNav } from '@/app/AppNav';
 import { useData } from '@/app/data-context';
 import { MeanderDivider, Plaque, SealButton } from '@/components/primitives';
 import { cx } from '@/theme';
@@ -21,7 +21,7 @@ export function Settings() {
 
   return (
     <div className="min-h-full">
-      <TopBar />
+      <AppNav />
       <main className="mx-auto w-full max-w-3xl px-6 pb-24 pt-8 sm:px-8">
         <header>
           <p className="font-sans text-xs uppercase tracking-[0.28em] text-ochre">Your rule</p>
@@ -379,32 +379,6 @@ function DataSection() {
         </p>
       ) : null}
     </Plaque>
-  );
-}
-
-function TopBar() {
-  return (
-    <div className="border-b border-ink/10">
-      <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-4 sm:px-8">
-        <Link
-          to="/"
-          className="font-display text-sm font-semibold uppercase tracking-[0.3em] text-pompeian-red"
-        >
-          {APP_NAME}
-        </Link>
-        <nav className="flex items-center gap-5 font-sans text-xs uppercase tracking-[0.16em] text-ink/60">
-          <Link to="/" className="transition-colors hover:text-ink">
-            Today
-          </Link>
-          <Link to="/vices" className="transition-colors hover:text-ink">
-            Vices
-          </Link>
-          <span aria-current="page" className="text-ink">
-            Settings
-          </span>
-        </nav>
-      </div>
-    </div>
   );
 }
 

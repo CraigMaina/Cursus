@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { APP_NAME } from '@/config/app';
+import { AppNav } from '@/app/AppNav';
 import { MeanderDivider, SealButton } from '@/components/primitives';
 import type { Template } from '@/lib/domain/schemas';
 import { useLibrary } from './useLibrary';
@@ -19,7 +19,7 @@ export function Library() {
 
   return (
     <div className="min-h-full">
-      <TopBar />
+      <AppNav maxWidth="max-w-5xl" />
 
       <main className="mx-auto w-full max-w-5xl px-6 pb-24 pt-8 sm:px-8">
         <header className="max-w-2xl">
@@ -82,22 +82,3 @@ export function Library() {
   );
 }
 
-function TopBar() {
-  return (
-    <div className="border-b border-ink/10">
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-4 sm:px-8">
-        <span className="font-display text-sm font-semibold uppercase tracking-[0.3em] text-pompeian-red">
-          {APP_NAME}
-        </span>
-        <nav className="flex items-center gap-5 font-sans text-xs uppercase tracking-[0.16em] text-ink/60">
-          <Link to="/" className="transition-colors hover:text-ink">
-            Today
-          </Link>
-          <span aria-current="page" className="text-ink">
-            Challenges
-          </span>
-        </nav>
-      </div>
-    </div>
-  );
-}

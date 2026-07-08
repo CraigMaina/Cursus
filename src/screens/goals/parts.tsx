@@ -1,6 +1,5 @@
 import { useId } from 'react';
-import { Link } from 'react-router-dom';
-import { APP_NAME } from '@/config/app';
+import { AppNav } from '@/app/AppNav';
 import { cx } from '@/theme';
 import type { GoalKind, IconSlot } from '@/lib/domain/schemas';
 
@@ -198,34 +197,6 @@ export function ConfirmInline({
   );
 }
 
-export function GoalsTopBar({ current }: { current: 'list' | 'detail' }) {
-  return (
-    <div className="border-b border-ink/10">
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-4 sm:px-8">
-        <Link
-          to="/"
-          className="font-display text-sm font-semibold uppercase tracking-[0.3em] text-pompeian-red"
-        >
-          {APP_NAME}
-        </Link>
-        <nav className="flex items-center gap-5 font-sans text-xs uppercase tracking-[0.16em] text-ink/60">
-          <Link to="/" className="transition-colors hover:text-ink">
-            Today
-          </Link>
-          <Link to="/vices" className="transition-colors hover:text-ink">
-            Vices
-          </Link>
-          {current === 'list' ? (
-            <span aria-current="page" className="text-ink">
-              Goals
-            </span>
-          ) : (
-            <Link to="/goals" className="transition-colors hover:text-ink">
-              Goals
-            </Link>
-          )}
-        </nav>
-      </div>
-    </div>
-  );
+export function GoalsTopBar() {
+  return <AppNav maxWidth="max-w-5xl" />;
 }

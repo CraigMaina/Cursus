@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { APP_NAME } from '@/config/app';
+import { AppNav } from '@/app/AppNav';
 import { MeanderDivider, MedallionBadge, Plaque } from '@/components/primitives';
 import { usePhotos } from './usePhotos';
 import { PhotoTile } from './PhotoTile';
@@ -17,7 +17,7 @@ export function Photos() {
 
   return (
     <div className="min-h-full">
-      <TopBar />
+      <AppNav maxWidth="max-w-4xl" />
 
       <main className="mx-auto w-full max-w-4xl px-6 pb-24 pt-8 sm:px-8">
         {p.loading ? (
@@ -129,28 +129,3 @@ function NoPhotoRule({ name }: { name: string }) {
   );
 }
 
-function TopBar() {
-  return (
-    <div className="border-b border-ink/10">
-      <div className="mx-auto flex w-full max-w-4xl items-center justify-between px-6 py-4 sm:px-8">
-        <Link
-          to="/"
-          className="font-display text-sm font-semibold uppercase tracking-[0.3em] text-pompeian-red"
-        >
-          {APP_NAME}
-        </Link>
-        <nav className="flex items-center gap-5 font-sans text-xs uppercase tracking-[0.16em] text-ink/60">
-          <Link to="/" className="transition-colors hover:text-ink">
-            Today
-          </Link>
-          <Link to="/library" className="transition-colors hover:text-ink">
-            Challenges
-          </Link>
-          <span aria-current="page" className="text-ink">
-            Photos
-          </span>
-        </nav>
-      </div>
-    </div>
-  );
-}

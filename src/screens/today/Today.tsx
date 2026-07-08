@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { APP_NAME } from '@/config/app';
+import { AppNav } from '@/app/AppNav';
 import { useOnline, usePausedMutationCount } from '@/app/useNetwork';
 import {
   MeanderDivider,
@@ -29,7 +29,7 @@ export function Today() {
 
   return (
     <div className="min-h-full">
-      <TopBar />
+      <AppNav />
       <OfflineBanner />
 
       <main className="mx-auto w-full max-w-3xl px-6 pb-24 pt-8 sm:px-8">
@@ -177,38 +177,6 @@ function AbandonControl({ onConfirm, busy }: { onConfirm: () => void; busy: bool
         Keep going
       </button>
     </span>
-  );
-}
-
-function TopBar() {
-  return (
-    <div className="border-b border-ink/10">
-      <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-4 sm:px-8">
-        <span className="font-display text-sm font-semibold uppercase tracking-[0.3em] text-pompeian-red">
-          {APP_NAME}
-        </span>
-        <nav className="flex items-center gap-5 font-sans text-xs uppercase tracking-[0.16em] text-ink/60">
-          <span aria-current="page" className="text-ink">
-            Today
-          </span>
-          <Link to="/library" className="transition-colors hover:text-ink">
-            Challenges
-          </Link>
-          <Link to="/vices" className="transition-colors hover:text-ink">
-            Vices
-          </Link>
-          <Link to="/goals" className="transition-colors hover:text-ink">
-            Goals
-          </Link>
-          <Link to="/stats" className="transition-colors hover:text-ink">
-            Stats
-          </Link>
-          <Link to="/settings" className="transition-colors hover:text-ink">
-            Settings
-          </Link>
-        </nav>
-      </div>
-    </div>
   );
 }
 

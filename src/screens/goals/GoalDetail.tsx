@@ -22,7 +22,7 @@ export function GoalDetail() {
 
   return (
     <div className="min-h-full">
-      <GoalsTopBar current="detail" />
+      <GoalsTopBar />
 
       <main className="mx-auto w-full max-w-5xl px-6 pb-24 pt-8 sm:px-8">
         {g.loading ? (

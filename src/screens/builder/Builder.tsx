@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { APP_NAME } from '@/config/app';
+import { AppNav } from '@/app/AppNav';
 import { MeanderDivider, Plaque, SealButton } from '@/components/primitives';
 import { cx } from '@/theme';
 import { builderSchema, type BuilderFormValues } from './builderForms';
@@ -40,7 +40,7 @@ export function Builder() {
 
   return (
     <div className="min-h-full">
-      <TopBar isEdit={b.isEdit} />
+      <AppNav maxWidth="max-w-4xl" />
 
       <main className="mx-auto w-full max-w-4xl px-6 pb-28 pt-8 sm:px-8">
         <header className="max-w-2xl">
@@ -144,25 +144,3 @@ export function Builder() {
   );
 }
 
-function TopBar({ isEdit }: { isEdit: boolean }) {
-  return (
-    <div className="border-b border-ink/10">
-      <div className="mx-auto flex w-full max-w-4xl items-center justify-between px-6 py-4 sm:px-8">
-        <span className="font-display text-sm font-semibold uppercase tracking-[0.3em] text-pompeian-red">
-          {APP_NAME}
-        </span>
-        <nav className="flex items-center gap-5 font-sans text-xs uppercase tracking-[0.16em] text-ink/60">
-          <Link to="/" className="transition-colors hover:text-ink">
-            Today
-          </Link>
-          <Link to="/library" className="transition-colors hover:text-ink">
-            Challenges
-          </Link>
-          <span aria-current="page" className="text-ink">
-            {isEdit ? 'Edit' : 'Build'}
-          </span>
-        </nav>
-      </div>
-    </div>
-  );
-}

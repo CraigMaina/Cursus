@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { APP_NAME } from '@/config/app';
+import { AppNav } from '@/app/AppNav';
 import {
   Icon,
   MeanderDivider,
   MedallionBadge,
   SealButton,
 } from '@/components/primitives';
-import { cx } from '@/theme';
 import { useVice } from './useVice';
 import { SavingsPanel } from './SavingsPanel';
 import { RelapseTimeline } from './RelapseTimeline';
@@ -31,7 +30,7 @@ export function ViceDetail() {
 
   return (
     <div className="min-h-full">
-      <TopBar />
+      <AppNav />
 
       <main className="mx-auto w-full max-w-3xl px-6 pb-24 pt-8 sm:px-8">
         {v.loading ? (
@@ -219,25 +218,3 @@ export function ViceDetail() {
   );
 }
 
-function TopBar() {
-  return (
-    <div className="border-b border-ink/10">
-      <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-4 sm:px-8">
-        <Link
-          to="/"
-          className="font-display text-sm font-semibold uppercase tracking-[0.3em] text-pompeian-red"
-        >
-          {APP_NAME}
-        </Link>
-        <nav className="flex items-center gap-5 font-sans text-xs uppercase tracking-[0.16em] text-ink/60">
-          <Link to="/" className="transition-colors hover:text-ink">
-            Today
-          </Link>
-          <Link to="/vices" className={cx('transition-colors hover:text-ink')}>
-            Vices
-          </Link>
-        </nav>
-      </div>
-    </div>
-  );
-}

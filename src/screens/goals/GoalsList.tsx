@@ -25,7 +25,7 @@ export function GoalsList() {
 
   return (
     <div className="min-h-full">
-      <GoalsTopBar current="list" />
+      <GoalsTopBar />
 
       <main className="mx-auto w-full max-w-5xl px-6 pb-24 pt-8 sm:px-8">
         <header className="flex flex-wrap items-end justify-between gap-6">

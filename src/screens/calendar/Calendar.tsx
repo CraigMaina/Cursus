@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { APP_NAME } from '@/config/app';
+import { AppNav } from '@/app/AppNav';
 import { MeanderDivider, MedallionBadge } from '@/components/primitives';
 import { cx } from '@/theme';
 import { useCalendar } from './useCalendar';
@@ -23,7 +23,7 @@ export function Calendar() {
 
   return (
     <div className="min-h-full">
-      <TopBar />
+      <AppNav />
 
       <main className="mx-auto w-full max-w-3xl px-6 pb-24 pt-8 sm:px-8">
         {c.loading ? (
@@ -142,28 +142,3 @@ function MonthNavButton({
   );
 }
 
-function TopBar() {
-  return (
-    <div className="border-b border-ink/10">
-      <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-4 sm:px-8">
-        <Link
-          to="/"
-          className="font-display text-sm font-semibold uppercase tracking-[0.3em] text-pompeian-red"
-        >
-          {APP_NAME}
-        </Link>
-        <nav className="flex items-center gap-5 font-sans text-xs uppercase tracking-[0.16em] text-ink/60">
-          <Link to="/" className="transition-colors hover:text-ink">
-            Today
-          </Link>
-          <Link to="/library" className="transition-colors hover:text-ink">
-            Challenges
-          </Link>
-          <span aria-current="page" className="text-ink">
-            Calendar
-          </span>
-        </nav>
-      </div>
-    </div>
-  );
-}
