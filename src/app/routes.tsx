@@ -48,5 +48,5 @@ export const router = createBrowserRouter([
   { path: '/goals/:goalId', element: <GoalDetail /> },
   { path: '/stats', element: <Stats /> },
   { path: '/settings', element: <Settings /> },
-  { path: '*', element: <ScaffoldScreen title="Not found" phase="—" /> },
+  { path: '*', element: <ScaffoldScreen title="Not found" phase="404" /> },
 ]);

@@ -46,7 +46,7 @@ const hasEnv = Boolean(
 
 if (!hasEnv) {
   // Visible breadcrumb so a skipped run is not mistaken for a passing RLS proof.
-  // eslint-disable-next-line no-console
+   
   console.warn(
     '[rls.two-user] SKIPPED: set SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, ' +
       'RLS_USER_A_EMAIL/PASSWORD, RLS_USER_B_EMAIL/PASSWORD to run the live RLS proof. ' +

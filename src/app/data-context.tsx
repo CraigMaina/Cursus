@@ -42,7 +42,7 @@ export const placeholderDataAccess: CursusDataAccess = new Proxy(
     get(_t, prop) {
       return () => {
         throw new Error(
-          `DAL not wired yet: ${String(prop)}() — Architect's src/data lands in Phase 1 (P1-A).`,
+          `DAL not wired yet: ${String(prop)}(). Provide a DataProvider value.`,
         );
       };
     },
